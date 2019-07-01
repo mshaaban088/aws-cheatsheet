@@ -18,7 +18,11 @@
 
 ## Load Balancers
 
-#### Classic Load Balancer
+- The Classic uses a `Round-Robin` strategy for TCP listeners only
+- The ALB 1st selects a target based on the routing rule, then uses a `Round-Robin` strategy to select a node
+- The NLB does not uses a `Round-Robin` strategy
+
+### Classic Load Balancer
 
 - Supports `HTTP`, `HTTPS`, `TCP`, and `SSL` protocols
 
@@ -97,6 +101,7 @@
   - `PostgreSQL`
 
 - Read Replicas for `MySQL` and `MariaDB` support Multi-AZ deployment
+- Read Replicas are supported by Amazon `Aurora`, Amazon `RDS` for `MySQL`, `MariaDB`, `PostgreSQL`, and `Oracle`
 - Backup retention period between `0 and 35 days`
   - `0` disables automated backups
   - `default` is `7 days` if you created the DB instance using the `Console`
@@ -167,3 +172,12 @@
 - You can delete a specific Lambda function version only if there are no aliases dependent on this version
 - If you don't specify any version in a `DeleteFunction` request, the entire function including all of its versions and aliases will be deleted
 - Lambda only publishes a new version if the code hasn't yet been published or if the code has changed when compared against the `$LATEST` version. When you publish additional versions, AWS Lambda assigns a monotonically increasing sequence number for versioning
+
+## Support
+
+### Levels
+
+- Basic
+- Developer
+- Business
+- Enterprise
