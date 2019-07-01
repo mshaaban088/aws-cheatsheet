@@ -5,6 +5,10 @@
 - `EC2` Uptime SLA is `99.95%` within a region
 - `AMIs` are not accessible across Regions, so you need to use the Console or CLI/SDK to copy AMIs between Regions.
 
+### AMIs
+
+- AWS does not copy launch permissions, user-defined tags, or Amazon S3 bucket permissions from the source AMI to the new AMI when you copy an Amazon Machine Image (AMI) within or across AWS Regions
+
 ### Reserved Instances (RI)
 
 - Provides up to `75%` discount
@@ -24,6 +28,7 @@
 
 ## S3
 
+- By default, there is a limit of `100` buckets per account
 - Bucket name restrictions
 
   - Between `3` and `63` characters long
@@ -32,15 +37,23 @@
   - Cannot contain underscores, end with a dash, have consecutive periods, or use dashes adjacent to periods
   - Cannot be formatted as an IP address (`198.51.100.24`)
 
-- `ONEZONE_IA` (OneZonal Infrequently Accessed)
-  - Less available and less resilient (`99.50%` availability)
-- `STANDARD_IA` (Standard Infrequently Accessed)
-  - More available and resilient (`99.9%` availability)
-  - Charges for 128 KB per object (even if the object is less than 128 KB)
-- Regionally redundant except `ONEZONE-IA`
-- `Glacier` data can be restored within `3-5 hours` (can be expedited to `minutes`)
-- `Glacier Deep Archive` data can be restored within `12 hours`
-- Durability is always `99.999999999%` (11 nines)
+- Sorage Classes
+
+  > Data is regionally redundant except `ONEZONE_IA`
+
+  > Durability is always `99.999999999%` (11 nines) except `S3-RRS` it is `99.99%`
+
+  - `ONEZONE_IA` (OneZonal Infrequently Accessed)
+    - Less available and less resilient (`99.50%` availability)
+  - `STANDARD_IA` (Standard Infrequently Accessed)
+    - More available and resilient (`99.9%` availability)
+    - Charges for 128 KB per object (even if the object is less than 128 KB)
+  - `RRS` (Reduced Redundancy Storage)
+    - Not recommended for new projects in some AWS regions
+    - Offers only `99.99%` durability, so you have to design your application to re-create any objects that may be lost
+  - `Glacier` data can be restored within `3-5 hours` (can be expedited to `minutes`)
+  - `Glacier Deep Archive` data can be restored within `12 hours`
+
 - `Multipart Upload`
   - Delivers the ability to begin an upload before you know the final object size
   - Delivers quick recovery from network issues
@@ -66,6 +79,13 @@
 
 - Does not support `edge-to-edge` routing
 
+### Network ACL
+
+- Rules are applied to subnets and all instances within the subnet
+- `Allow` & `Deny` rules are supported
+- Rules are stateless, traffic for `ingress` & `egress` must be declared in rules
+- Rules are processed in order to determine what traffic is permitted
+
 ## Databases
 
 ### RDS
@@ -86,8 +106,9 @@
   2. A new standby instance is created in a different Availability Zone
   3. From the snapshot, synchronous replication is configured between primary and standby instances
 - Multi-AZ RDS deployment will automatically fail-over as a result of
-  - Loss of availability in primary Availability Zone
-  - Loss of network connectivity to the Primary
+  - Complete failure of the primary instance
+  - Loss of availability in primary AZ
+  - Loss of network connectivity in the primary AZ
 - Updates are applied to your Read Replica(s) after they occur on the source DB Instance using `Asynchronous Replication`
 
 ### Placement Groups
